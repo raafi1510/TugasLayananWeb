@@ -91,4 +91,57 @@ class MahasiswaApiController extends Controller
         ], 200);
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        $mahasiswa = \App\Models\Mahasiswa::with('user', 'prodi')
+            ->where('nama', 'like', "%$query%")
+            ->orWhere('nim', 'like', "%$query%")
+            ->orWhereHas('user', function ($q) use ($query) {
+                $q->where('email', 'like', "%$query%");
+            })
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $mahasiswa
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $mahasiswa = \App\Models\Mahasiswa::find($id);
+
+        if (!$mahasiswa) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mahasiswa tidak ditemukan'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'nama' => 'sometimes|required|string|max:255',
+            'nim' => 'sometimes|required|string|unique:mahasiswas,nim,' . $mahasiswa->id,
+            'prodi_id' => 'sometimes|required|exists:prodis,id',
+            'user_id' => 'sometimes|required|exists:users,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $mahasiswa->update($request->only(['nama', 'nim', 'prodi_id', 'user_id']));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data mahasiswa berhasil diperbarui',
+            'data' => $mahasiswa
+        ]);
+    }
+
 }

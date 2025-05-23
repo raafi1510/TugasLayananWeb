@@ -72,4 +72,54 @@ class MataKuliahApiController extends Controller
         ], 200);
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        $matakuliah = MataKuliah::where('nama', 'like', "%$query%")
+            ->orWhere('kode', 'like', "%$query%")
+            ->orWhere('sks', 'like', "%$query%")
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $matakuliah
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $matakuliah = MataKuliah::find($id);
+
+        if (!$matakuliah) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mata kuliah tidak ditemukan'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'nama' => 'sometimes|required|string|max:255',
+            'kode' => 'sometimes|required|string|max:10|unique:mata_kuliahs,kode,' . $matakuliah->id,
+            'sks' => 'sometimes|required|integer|min:1|max:6',
+            'prodi_id' => 'sometimes|required|exists:prodis,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $matakuliah->update($request->only(['nama', 'kode', 'sks', 'prodi_id']));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Mata kuliah berhasil diperbarui',
+            'data' => $matakuliah
+        ]);
+    }
+
 }

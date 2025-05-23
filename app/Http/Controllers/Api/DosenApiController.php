@@ -91,4 +91,58 @@ class DosenApiController extends Controller
         ], 200);
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        $dosen = \App\Models\Dosen::with('user', 'prodi')
+            ->where('nama', 'like', "%$query%")
+            ->orWhere('nidn', 'like', "%$query%")
+            ->orWhereHas('user', function ($q) use ($query) {
+                $q->where('email', 'like', "%$query%");
+            })
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $dosen
+        ]);
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        $dosen = \App\Models\Dosen::find($id);
+
+        if (!$dosen) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dosen tidak ditemukan'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'nama' => 'sometimes|required|string|max:255',
+            'nidn' => 'sometimes|required|string|unique:dosens,nidn,' . $dosen->id,
+            'prodi_id' => 'sometimes|required|exists:prodis,id',
+            'user_id' => 'sometimes|required|exists:users,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $dosen->update($request->only(['nama', 'nidn', 'prodi_id', 'user_id']));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data dosen berhasil diperbarui',
+            'data' => $dosen
+        ]);
+    }
+
 }
