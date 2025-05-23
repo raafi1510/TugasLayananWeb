@@ -11,12 +11,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('kelas', function (Blueprint $table) {
-            $table->id_kelas();
-            $table->id_matkul();
-            $table->id_dosen();
-            $table->string('semester', length: 6);
-            $table->string('nama_matkul', length: 30);
-            $table->string('sks', length: 1);
+            $table->id();
+            $table->string('kelas', length: 1);
+            $table->integer('id_matkul');
+            $table->string('tahun_akademik', length: 20);
+            $table->integer('id_prodi');
             $table->timestamps();
         });
     }
