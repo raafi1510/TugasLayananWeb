@@ -42,4 +42,15 @@ Route::prefix('api')->group(function () {
     Route::delete('/matakuliah/{id}', [MataKuliahApiController::class, 'destroy']);
     Route::delete('/mahasiswa/{id}', [MahasiswaApiController::class, 'destroy']);
     Route::delete('/dosen/{id}', [DosenApiController::class, 'destroy']);
+
+    Route::get('/user/search', [UserApiController::class, 'search']);
+    Route::put('/user/{id}', [UserApiController::class, 'update']);
+
+    Route::get('/matakuliah/search', [MataKuliahApiController::class, 'search']);
+    Route::put('/matakuliah/{id}', [MataKuliahApiController::class, 'update']);
+
+    Route::get('/mahasiswa/search', [MahasiswaApiController::class, 'search']);
+    Route::put('/mahasiswa/{id}', [MahasiswaApiController::class, 'update']);
+    Route::get('/dosen/search', [DosenApiController::class, 'search']);
+    Route::put('/dosen/{id}', [DosenApiController::class, 'update']);
 });
