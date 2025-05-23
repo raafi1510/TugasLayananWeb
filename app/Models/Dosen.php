@@ -21,4 +21,11 @@ class Dosen extends Model
         return $this->hasMany(MataKuliah::class);
     }
 
+    protected $fillable = [
+        'user_id',
+        'nidn',
+        'fakultas_id',
+        'prodi_id',
+    ];
+
 }

@@ -25,4 +25,11 @@ class Mahasiswa extends Model
     {
         return $this->hasMany(Nilai::class);
     }
+
+    protected $fillable = [
+        'user_id',
+        'nim',
+        'kelas_id',
+        'prodi_id',
+    ];
 }

@@ -20,4 +20,12 @@ class Matakuliah extends Model
     {
         return $this->hasMany(Nilai::class);
     }
+
+    protected $fillable = [
+        'kode',
+        'nama',
+        'sks',
+        'dosen_id',
+        'prodi_id'
+    ];
 }
