@@ -66,4 +66,29 @@ class MahasiswaApiController extends Controller
             ]
         ], 201);
     }
+
+    public function destroy($id)
+    {
+        $mahasiswa = Mahasiswa::find($id);
+
+        if (!$mahasiswa) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mahasiswa tidak ditemukan'
+            ], 404);
+        }
+
+        // Jika ingin sekaligus hapus user yang terkait
+        if ($mahasiswa->user) {
+            $mahasiswa->user->delete();
+        }
+
+        $mahasiswa->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Mahasiswa dan user terkait berhasil dihapus'
+        ], 200);
+    }
+
 }

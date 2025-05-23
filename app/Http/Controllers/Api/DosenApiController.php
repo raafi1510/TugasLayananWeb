@@ -67,4 +67,28 @@ class DosenApiController extends Controller
         ], 201);
     }
 
+    public function destroy($id)
+    {
+        $dosen = Dosen::find($id);
+
+        if (!$dosen) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dosen tidak ditemukan'
+            ], 404);
+        }
+
+        // Jika ingin hapus user yang terkait juga
+        if ($dosen->user) {
+            $dosen->user->delete();
+        }
+
+        $dosen->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Dosen dan user terkait berhasil dihapus'
+        ], 200);
+    }
+
 }

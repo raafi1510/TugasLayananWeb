@@ -50,4 +50,23 @@ class UserApiController extends Controller
             'data' => $user
         ], 201);
     }
+
+    public function destroy($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User tidak ditemukan'
+            ], 404);
+        }
+
+        $user->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User berhasil dihapus'
+        ], 200);
+    }
 }

@@ -52,4 +52,24 @@ class MataKuliahApiController extends Controller
             'data' => $matakuliah
         ], 201);
     }
+
+    public function destroy($id)
+    {
+        $matakuliah = MataKuliah::find($id);
+
+        if (!$matakuliah) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mata kuliah tidak ditemukan'
+            ], 404);
+        }
+
+        $matakuliah->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Mata kuliah berhasil dihapus'
+        ], 200);
+    }
+
 }
