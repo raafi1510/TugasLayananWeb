@@ -54,3 +54,12 @@ Route::prefix('api')->group(function () {
     Route::get('/dosen/search', [DosenApiController::class, 'search']);
     Route::put('/dosen/{id}', [DosenApiController::class, 'update']);
 });
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
