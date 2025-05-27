@@ -10,13 +10,15 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('nilais', function (Blueprint $table) {
+        Schema::create('presensis', function (Blueprint $table) {
             $table->id();
             $table->integer('id_matakuliah');
             $table->integer('id_kelas');
+            $table->integer('id_dosen');
             $table->integer('id_mahasiswa');
-            $table->enum('tipe_nilai', ['tugas', 'uts', 'uas']);
-            $table->decimal('nilai', 5, 2);
+            $table->date('tanggal');
+            $table->enum('status', ['Hadir', 'Tidak Hadir', 'Izin', 'Sakit']);
+            $table->string('pertemuan');
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('nilais');
+        Schema::dropIfExists('presensis');
     }
 };
